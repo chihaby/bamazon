@@ -14,11 +14,12 @@ connection.connect(function(err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
     listAllData();
+    
 });
 
 // Requestins data from database table
 function listAllData(){
-    const query = connection.query("SELECT * FROM products", function(err, response1) {
+    var query = connection.query("SELECT * FROM products", function(err, response1) {
         if (err) throw err;
         console.log(response1);
         start();
@@ -41,12 +42,13 @@ function start(){
                 message: "How many units would you like to buy?"
             }])
             .then(function(answer){
-                const query = "SELECT stock_quantity FROM products WHERE?";
-                connection.query(query, {quantity: answer.quantity}, function(err, res){
-                    for (var i = 0; i <res.length; i++) {
-                        console.log("Quantity" + res[i].quantity);
-                    }
+                var query =  connection.query("SELECT stock_quantity FROM products WHERE item_id = ?"[answer.item_id], function(err, response2) {
+                    if (err) throw err;
+                    for(var i=0; i<response2.length; i++){
+                    console.log(response2[i]);  
+                    //connection.end();
+                    }               
                 })
-            })
+            });
     }
 
