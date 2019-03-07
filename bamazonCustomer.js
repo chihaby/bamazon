@@ -1,6 +1,7 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 
+// setup MySQL connection 
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
@@ -15,6 +16,7 @@ connection.connect(function(err) {
     listAllData();
 });
 
+// Requestins data from database table
 function listAllData(){
     const query = connection.query("SELECT * FROM products", function(err, response1) {
         if (err) throw err;
@@ -24,6 +26,7 @@ function listAllData(){
     console.log(query.sql);
 }
 
+//prompt user input
 function start(){
     inquirer
         .prompt([
@@ -38,18 +41,12 @@ function start(){
                 message: "How many units would you like to buy?"
             }])
             .then(function(answer){
-                const query = connection.query("SELECT * FROM products", function(err, response2) {
-                    if (err) throw err;
-                    response2.forEach(element => {
-                        //var chosenItem = [];
-                        if (element.item_id === answer.item_id){
-                            //chosenItem.push(element.item_id);
-                            console.log(element.item_id);
-                            //return chosenItem;
-                            connection.end();
-                    }                   
-                });  
-                
+                const query = "SELECT stock_quantity FROM products WHERE?";
+                connection.query(query, {quantity: answer.quantity}, function(err, res){
+                    for (var i = 0; i <res.length; i++) {
+                        console.log("Quantity" + res[i].quantity);
+                    }
+                })
             })
-    })
-}
+    }
+
