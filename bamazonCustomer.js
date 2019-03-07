@@ -16,11 +16,10 @@ connection.connect(function(err) {
 });
 
 function listAllData(){
-    const query = connection.query("SELECT * FROM products", function(err, res) {
+    const query = connection.query("SELECT * FROM products", function(err, response1) {
         if (err) throw err;
-        console.log(res[0].stock_quantity);
+        console.log(response1);
         start();
-       // connection.end();
     });
     console.log(query.sql);
 }
@@ -39,17 +38,18 @@ function start(){
                 message: "How many units would you like to buy?"
             }])
             .then(function(answer){
-                const query = connection.query("SELECT * FROM products", function(err, res) {
+                const query = connection.query("SELECT * FROM products", function(err, response2) {
                     if (err) throw err;
-                    // console.log(res[1].stock_quantity);
-                    var arr = [];
-                for (var i=0; i<res.length; i++){
-                    if (res[i].item_id == answer.item_id){
-                        arr.push(res[i]);
-                        console.log(arr);
-                    }
-                }
-                connection.end();
+                    response2.forEach(element => {
+                        //var chosenItem = [];
+                        if (element.item_id === answer.item_id){
+                            //chosenItem.push(element.item_id);
+                            console.log(element.item_id);
+                            //return chosenItem;
+                            connection.end();
+                    }                   
+                });  
+                
             })
     })
 }
