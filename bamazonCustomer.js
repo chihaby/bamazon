@@ -47,29 +47,40 @@ function start(){
                     for(var i=0; i<response2.length; i++){
 
                         console.log(response2[i]); 
-                        console.log("=======Quantity IN STOCK=======");    
-                        console.log(response2[i].stock_quantity);
+                        console.log("===============================");    
+                        console.log("Quantity In Stock: " + response2[i].stock_quantity);
                         console.log("==============================="); 
+                        //add quantity ordered;
+
+                        console.log("===============================");    
+                        console.log("Quantity Ordered: " + answer.quantity);
+                        console.log("==============================="); 
+
                     
                     if(response2[i].stock_quantity <= 0){
                         console.log("*******ITEM OUT OF STOCK*******"); 
                         } 
 
                     else if (answer.quantity > response2[i].stock_quantity){
-                        console.log("There are only "+ response2[i].stock_quantity + " units available" );
+                        console.log("Insufficient quantity! There are only "+ response2[i].stock_quantity + " Units available" );
                     }
 
                     connection.query(`UPDATE products SET stock_quantity = "${response2[i].stock_quantity}" - "${answer.quantity}" WHERE item_id = "${answer.item_id}" `);
                     connection.query(`SELECT * FROM products WHERE item_id = "${answer.item_id}"`, function(err, response3) {
                     for (var i=0; i<response3.length; i++){
 
-                        console.log("=======Updated Quantity===========");    
-                        console.log(response3[i].stock_quantity);
-                        console.log("===============================");      
+                        console.log("===============================");    
+                        console.log("Updated Quantity: " + response3[i].stock_quantity);
+                        console.log("===============================");   
+                        
+                        console.log("===============================");    
+                        console.log("Total Amount: $" + response3[i].price * answer.quantity);
+                        console.log("===============================");   
 
                             if(response3[i].stock_quantity <= 0){
                                 console.log("*******ITEM OUT OF STOCK*******");                                
                                 } 
+
                                 connection.end();      
                         }
                     })             
