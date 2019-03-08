@@ -42,13 +42,38 @@ function start(){
                 message: "How many units would you like to buy?"
             }])
             .then(function(answer){
-                var query =  connection.query("SELECT stock_quantity FROM products WHERE item_id = ?"[answer.item_id], function(err, response2) {
+                var query =  connection.query(`SELECT * FROM products WHERE item_id = "${answer.item_id}"`, function(err, response2) {
                     if (err) throw err;
                     for(var i=0; i<response2.length; i++){
-                    console.log(response2[i]);  
-                    //connection.end();
-                    }               
-                })
-            });
-    }
 
+                        console.log(response2[i]); 
+                        console.log("=======Quantity IN STOCK=======");    
+                        console.log(response2[i].stock_quantity);
+                        console.log("==============================="); 
+                    
+                    if(response2[i].stock_quantity <= 0){
+                        console.log("*******ITEM OUT OF STOCK*******"); 
+                        } 
+
+                    else if (answer.quantity > response2[i].stock_quantity){
+                        console.log("There are only "+ response2[i].stock_quantity + " units available" );
+                    }
+
+                    connection.query(`UPDATE products SET stock_quantity = "${response2[i].stock_quantity}" - "${answer.quantity}" WHERE item_id = "${answer.item_id}" `);
+                    connection.query(`SELECT * FROM products WHERE item_id = "${answer.item_id}"`, function(err, response3) {
+                    for (var i=0; i<response3.length; i++){
+
+                        console.log("=======Updated Quantity===========");    
+                        console.log(response3[i].stock_quantity);
+                        console.log("===============================");      
+
+                            if(response3[i].stock_quantity <= 0){
+                                console.log("*******ITEM OUT OF STOCK*******");                                
+                                } 
+                                connection.end();      
+                        }
+                    })             
+                }
+            })
+        })
+    }
