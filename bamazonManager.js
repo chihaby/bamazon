@@ -75,14 +75,60 @@ function addInventory() {
             message: "How many items are you adding?"
         }
     ]).then(function (answer) {
-        connection.query(`UPDATE products SET stock_quantity WHERE item_id = "${answer.item_id}"`, function (err, response3) {
-            if (err) throw err;
+        connection.query(`
+            UPDATE products
+            SET stock_quantity = stock_quantity + ${answer.quantity}
+            WHERE item_id = ${answer.item_id}`,
+            function (err, response3) {
+                if (err) throw err;
 
-            for (var i = 0; i < response3.length; i++) {
-                console.log("=================" + answer.quantity + "New items added");
-                console.log("================= New Inventory " + response3[i].stock_quantity + answer.quantity);
-            }
-        })
-        //connection.end();
+                for (var i = 0; i < response3.length; i++) {
+                    console.log("===============================================");
+                    console.log(answer.quantity + " New items added to: " + answer.item_id);
+                    console.log("New Inventory" + answer.item_id + " = " + response3[i].stock_quantity + answer.quantity);
+                    console.log("================================================");
+
+                    console.log("===============================");
+                    console.log("Updated Quantity: " + response3[i].stock_quantity);
+                    console.log("===============================");
+
+                    connection.end();
+                }
+            })
+    })
+}
+
+function addProduct() {
+    inquirer.prompt([
+        {
+            name: 'item_id',
+            type: "input",
+            message: "Item ID"
+        },
+        {
+            name: 'product_name',
+            type: "input",
+            message: "Product name"
+        },
+        {
+            name: 'department_name',
+            type: "input",
+            message: "Department"
+        },
+        {
+            name: 'price',
+            type: "input",
+            message: "Price"
+        },
+        {
+            name: 'quantity',
+            type: "input",
+            message: "Quantity"
+        }
+    ]).then(function (answer) {
+        connection.query(`
+            INSERT INTO products (item_id, product_name, department_name, price, stock_quantity),
+            VALUES
+                ("${answer.item_id}', '${answer.product_name}', '${answer.department_name}', ${answer.price}, ${answer.quantity})`);
     })
 }
