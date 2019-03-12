@@ -91,7 +91,6 @@ function addInventory() {
                     console.log("===============================");
                     console.log("Updated Quantity: " + response3[i].stock_quantity);
                     console.log("===============================");
-
                     connection.end();
                 }
             })
@@ -130,14 +129,17 @@ function addProduct() {
             INSERT INTO products (item_id, product_name, department_name, price, stock_quantity)
             VALUES
                 ('${answer.item_id}', '${answer.product_name}', '${answer.department_name}', ${answer.price}, ${answer.quantity})`);
-
         connection.query(`SELECT * FROM products`, function (err, response4) {
             if (err) throw err;
+
             console.log("================================");
             console.log([response4]);
             console.log("================================");
-
             connection.end();
         })
     })
+}
+
+function exit() {
+    exit();
 }
